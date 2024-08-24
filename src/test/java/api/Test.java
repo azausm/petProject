@@ -1,5 +1,6 @@
 package api;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import entities.RequestBody;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -61,6 +62,7 @@ public class Test {
                 .params(params).get( Config.getProperty("cashWiseApiUrl")+ "/api/myaccount/sellers");
         Assert.assertEquals(200, response.statusCode());
 
+        System.out.println(response.prettyPrint());
         String email = response.jsonPath().getString("responses[0].email");
         Assert.assertNotNull(email);
 
@@ -90,5 +92,32 @@ public class Test {
 //            Assert.assertNotNull(response.jsonPath().getString("responses" + " [" + a + "]" + "email"));
         }
     }
+
+
+    @org.junit.Test
+    public void CreateSeller(){
+        String url = Config.getProperty("cashWiseApiUrl") + "/api/myaccount/sellers";
+        String token = CashWiseToken.GetToken();
+
+        RequestBody requestBody = new RequestBody();
+        requestBody.setCompany_name("J1P MORGAN12");
+        requestBody.setSeller_name("1CHASE12");
+        requestBody.setEmail("1chase1@gmail.com");
+        requestBody.setPhone_number("312123321");
+        requestBody.setAddress("DOWNTOWN");
+
+        Response response = RestAssured.given().auth().oauth2(token).contentType(ContentType.JSON)
+                .body(requestBody).post(url);
+
+        Assert.assertEquals(201, response.getStatusCode());
+
+        String id = response.jsonPath().getString("seller_id");
+        Response response1 = RestAssured.given().auth().oauth2(CashWiseToken.GetToken()).get(Config.
+                getProperty("cashWiseApiUrl") + "/api/myaccount/sellers/" + id);
+        Assert.assertEquals(200, response1.getStatusCode());
+
+    }
+
+
 
 }
