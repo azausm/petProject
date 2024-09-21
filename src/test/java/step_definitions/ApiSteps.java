@@ -16,10 +16,11 @@ public class ApiSteps {
     String newEmail;
     String newName;
     int sellerId;
+    boolean isPresent;
 
     @Given("user hits get single seller api with {string}")
     public void user_hits_get_single_seller_api_with(String string) {
-        APIRunner.runGET(string, 4702);
+        APIRunner.runGET(string, 5350);
 
         sellerId = APIRunner.getCustomResponse().getSeller_id();
 
@@ -63,7 +64,7 @@ public class ApiSteps {
         requestBody.setPhone_number(faker.phoneNumber().phoneNumber());
         requestBody.setAddress(faker.address().fullAddress());
 
-        APIRunner.runPUT(string, 4702,requestBody);
+        APIRunner.runPUT(string, 5350,requestBody);
 
         newEmail = APIRunner.getCustomResponse().getEmail();
         newName = APIRunner.getCustomResponse().getSeller_name();
@@ -93,18 +94,18 @@ public class ApiSteps {
         params.put("page", 1);
         params.put("size", 1);
         APIRunner.runGET(string,params);
-    }
-    @Then("user verify seller is archived")
-    public void user_verify_seller_is_archived() {
         int size = APIRunner.getCustomResponse().getResponses().size();
-        boolean isPresent = false;
+        isPresent = false;
         for (int i = 0; i<size; i++){
-            if (sellerId == APIRunner.getCustomResponse().getResponses().get(i).getSeller_id()){
+            int id = APIRunner.getCustomResponse().getResponses().get(i).getSeller_id();
+            if (sellerId == id){
                 isPresent = true;
                 break;
             }
         }
-
+    }
+    @Then("user verify seller is archived")
+    public void user_verify_seller_is_archived() {
         Assert.assertTrue(isPresent);
     }
 

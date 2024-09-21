@@ -19,8 +19,8 @@ Feature: test seller api
        And verify user first name was updated
 
 
-       @archiveSeller @regression
-       Scenario: get all sellers, archive all sellers and verify sellers are archived
+       @archiveSeller
+       Scenario: get a single sellers, archive all sellers and verify sellers are archived
          Given user hits get single seller api with "/api/myaccount/sellers/"
          Then user hits the api with "/api/myaccount/sellers/archive/unarchive" to archive the seller
          Then user hits get all archived sellers api with "/api/myaccount/sellers"
@@ -28,7 +28,7 @@ Feature: test seller api
 
 
 
-         @CreateDelete @regression
+         @CreateDelete
          Scenario: Create a seller, delete a seller, verify seller was deleted
            Given user hits post api with "/api/myaccount/sellers"
            Then verify seller id was generetad
